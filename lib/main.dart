@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:will_do_full_app/feature/splash_screen/splash_view.dart';
+import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/initialize/app_start_init.dart';
 
 void main() async {
@@ -13,15 +15,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      title: AppText.appName,
+      home: const SplashView(),
     );
   }
 }
