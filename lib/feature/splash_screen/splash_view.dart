@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
-import 'package:will_do_full_app/feature/home/home_view.dart';
+import 'package:will_do_full_app/feature/auth/authentication_view.dart';
 import 'package:will_do_full_app/feature/splash_screen/splash_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -37,14 +37,13 @@ class _SplashViewState extends ConsumerState<SplashView> {
         }
         if (next.isRedirectHome != null) {
           if (next.isRedirectHome!) {
-            context.navigateToPage(const HomeView());
+            context.navigateToPage(const AuthenticationView());
           }
         }
       },
     );
 
     return Scaffold(
-      backgroundColor: ColorConst.backgrounColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
