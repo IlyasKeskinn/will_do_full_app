@@ -1,14 +1,12 @@
-// ignore_for_file: sort_constructors_first
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 enum ImageConstants {
-  logo('logo');
+  checklist('checklist');
 
   final String value;
 
   const ImageConstants(this.value);
 
-  String get toPng => 'assets/icons/ic_$value.png';
-  Image get toImage => Image.asset(toPng);
+  String get toPath => 'assets/image/img_$value.png';
+  Image get toImg => Image.asset(toPath);
 }

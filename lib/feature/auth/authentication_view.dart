@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:firebase_ui_oauth_twitter/firebase_ui_oauth_twitter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
+import 'package:will_do_full_app/auth/keys.dart';
 import 'package:will_do_full_app/feature/auth/authentication_provider.dart';
 import 'package:will_do_full_app/feature/home/home_view.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -52,12 +55,37 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 LoginView(
+                  footerBuilder: (context, action) {
+                    return or_divider(context);
+                  },
                   actionButtonLabelOverride: AppText.loginSign,
                   action: AuthAction.signIn,
                   providers: FirebaseUIAuth.providersFor(
                     FirebaseAuth.instance.app,
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OAuthProviderButton(
+                      variant: OAuthButtonVariant.icon,
+                      action: AuthAction.signIn,
+                      provider: GoogleProvider(
+                        clientId: Keys.client_id,
+                        redirectUri: Keys.redirecet_uri,
+                      ),
+                    ),
+                    OAuthProviderButton(
+                      variant: OAuthButtonVariant.icon,
+                      action: AuthAction.signIn,
+                      provider: TwitterProvider(
+                        apiKey: '',
+                        apiSecretKey: '',
+                        redirectUri: Keys.redirecet_uri,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -65,4 +93,25 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
       ),
     );
   }
+}
+
+Padding or_divider(BuildContext context) {
+  return Padding(
+    padding: context.verticalPaddingLow,
+    child: Row(
+      children: const [
+        Expanded(
+          child: Divider(
+            thickness: 2,
+          ),
+        ),
+        Text('or'),
+        Expanded(
+          child: Divider(
+            thickness: 2,
+          ),
+        ),
+      ],
+    ),
+  );
 }

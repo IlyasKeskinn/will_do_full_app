@@ -16,7 +16,8 @@ class AppTheme {
             padding: MaterialStateProperty.all<EdgeInsets>(
               const EdgeInsets.all(14),
             ),
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            backgroundColor:
+                MaterialStateProperty.all<Color>(ColorConst.primaryColor),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             elevation: MaterialStateProperty.all<double>(20),
           ),

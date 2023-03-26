@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">auth project</string>
+<string name="facebook_app_id">516563460033784</string>
+<string name="facebook_client_token">51fa37947b8ba2dacf82118601f964fb</string>
+</resources>
