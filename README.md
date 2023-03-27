@@ -1,4 +1,4 @@
-# News App
+# To-do App
 *In this project I am developing a simple to-do application with firebase integration.*
 ## What will be add  ❓
 
