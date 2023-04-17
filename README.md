@@ -1,16 +1,38 @@
-# will_do_full_app
+# To-do App
+*In this project I am developing a simple to-do application with firebase integration.*
+## What will be add  ❓
 
-A new Flutter project.
+- [x] HomePage UI
+- [x] Splash Screen
+- [x] Login Page Auth
+- [ ] Focus-Pomodoro Page
+- [ ] Profile Page
+- [ ] Settings Page
+- [ ] Onboarding
 
-## Getting Started
+## Libraries I use in the application:
 
-This project is a starting point for a Flutter application.
+**Core**
+easy_localization: https://pub.dev/packages/easy_localization
 
-A few resources to get you started if this is your first Flutter project:
+flutter_riverpod: https://pub.dev/packages/flutter_riverpod
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+kartal: https://pub.dev/packages/kartal
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+equatable: https://pub.dev/packages/equatable
+
+ **Firebase**
+firebase_core: https://pub.dev/packages/firebase_core
+
+cloud_firestore: https://pub.dev/packages/cloud_firestore
+
+firebase_auth: https://pub.dev/packages/firebase_auth
+
+firebase_ui_auth: https://pub.dev/packages/firebase_ui_auth
+
+firebase_ui_oauth_google: https://pub.dev/packages/firebase_ui_oauth_google
+
+**Cache**
+shared_preferences: https://pub.dev/packages/shared_preferences
+
+
