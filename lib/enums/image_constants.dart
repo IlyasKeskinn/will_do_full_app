@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 enum ImageConstants {
-  checklist('checklist');
+  checklist('checklist'),
+  avatar('avatarPhoto');
 
   final String value;
 

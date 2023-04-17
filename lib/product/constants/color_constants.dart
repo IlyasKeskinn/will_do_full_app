@@ -6,4 +6,5 @@ class ColorConst {
   static Color primaryColor = const Color(0xff8687E7);
   static Color grey = const Color(0xff363636);
   static Color darkgrey = const Color(0xff1D1D1D);
+  static Color priorityMedium = const Color(0xffFFBF00);
 }

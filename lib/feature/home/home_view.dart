@@ -17,52 +17,55 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: ColorConst.white,
-        onPressed: () {},
-        backgroundColor: ColorConst.primaryColor,
-        child: const Icon(Icons.add),
-      ),
-      body: ListView(
-        children: [
-          const _Appbar(), //_EmptyTask(),
-          Padding(
-            padding: context.paddingNormal,
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    contentPadding: context.paddingNormal,
-                    fillColor: ColorConst.darkgrey,
-                    filled: true,
-                    border: InputBorder.none,
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: AppText.homesearchTask,
+    return SafeArea(
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          foregroundColor: ColorConst.white,
+          onPressed: () {},
+          backgroundColor: ColorConst.primaryColor,
+          child: const Icon(Icons.add),
+        ),
+        body: Column(
+          children: [
+            const _Appbar(), //_EmptyTask(),
+            Padding(
+              padding: context.paddingNormal,
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      contentPadding: context.paddingNormal,
+                      fillColor: ColorConst.darkgrey,
+                      filled: true,
+                      border: InputBorder.none,
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: AppText.homesearchTask,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: context.dynamicHeight(0.8),
-                  child: ListView.builder(
-                    itemCount: 14,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: context.onlyTopPaddingNormal,
-                        child: const ToDoTileWidget(
-                          taskName: 'taskName',
-                          isTaskCompleted: false,
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+                  context.emptySizedHeightBoxLow,
+                  SizedBox(
+                    height: context.dynamicHeight(0.7),
+                    child: ListView.builder(
+                      itemCount: 14,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: context.onlyTopPaddingNormal,
+                          child: const ToDoTileWidget(
+                            taskName: 'taskName',
+                            isTaskCompleted: false,
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+        bottomNavigationBar: const _NavigationBar(),
       ),
-      bottomNavigationBar: const _NavigationBar(),
     );
   }
 }
@@ -82,11 +85,16 @@ class _Appbar extends StatelessWidget {
             icon: const Icon(Icons.filter_list_outlined),
           ),
           TitleText(value: AppText.appName),
-          SizedBox(
-            height: 56,
-            child: CircleAvatar(
+          DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
               child: Image.asset(
-                ImageConstants.checklist.toPath,
+                ImageConstants.avatar.toPath,
+                height: 50,
+                width: 50,
               ),
             ),
           )
