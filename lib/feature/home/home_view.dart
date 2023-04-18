@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
+import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/widget/homepage/todo_tile.dart';
@@ -44,27 +45,38 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   context.emptySizedHeightBoxLow,
-                  SizedBox(
-                    height: context.dynamicHeight(0.7),
-                    child: ListView.builder(
-                      itemCount: 14,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: context.onlyTopPaddingNormal,
-                          child: const ToDoTileWidget(
-                            taskName: 'taskName',
-                            isTaskCompleted: false,
-                          ),
-                        );
-                      },
-                    ),
-                  )
+                  const Todos()
                 ],
               ),
             )
           ],
         ),
         bottomNavigationBar: const _NavigationBar(),
+      ),
+    );
+  }
+}
+
+class Todos extends StatelessWidget {
+  const Todos({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: context.dynamicHeight(0.7),
+      child: ListView.builder(
+        itemCount: 14,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: context.onlyTopPaddingNormal,
+            child: const ToDoTileWidget(
+              taskName: 'taskName',
+              isTaskCompleted: false,
+            ),
+          );
+        },
       ),
     );
   }
@@ -85,16 +97,21 @@ class _Appbar extends StatelessWidget {
             icon: const Icon(Icons.filter_list_outlined),
           ),
           TitleText(value: AppText.appName),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.asset(
-                ImageConstants.avatar.toPath,
-                height: 50,
-                width: 50,
+          InkWell(
+            onTap: () {
+              context.navigateToPage(const ProfileView());
+            },
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.asset(
+                  ImageConstants.avatar.toPath,
+                  height: 50,
+                  width: 50,
+                ),
               ),
             ),
           )

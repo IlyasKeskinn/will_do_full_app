@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/icon_constants.dart';
-import 'package:will_do_full_app/feature/auth/authentication_view.dart';
+import 'package:will_do_full_app/feature/auth/auth_page.dart';
 import 'package:will_do_full_app/feature/splash_screen/splash_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -37,7 +37,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
         }
         if (next.isRedirectHome != null) {
           if (next.isRedirectHome!) {
-            context.navigateToPage(const AuthenticationView());
+            context.navigateToPage(const AuthPage());
           }
         }
       },

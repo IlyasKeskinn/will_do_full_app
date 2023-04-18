@@ -1,12 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
+import 'package:will_do_full_app/feature/auth/auth_page.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +34,7 @@ class ProfileView extends StatelessWidget {
                 const _Buttons(),
                 context.emptySizedHeightBoxLow3x,
                 const _SettingsColumn(),
-                const _LogoutButton()
+                const _LogoutButton(),
               ],
             ),
           )
@@ -38,17 +45,20 @@ class ProfileView extends StatelessWidget {
 }
 
 class _LogoutButton extends StatelessWidget {
-  const _LogoutButton({
-    super.key,
-  });
+  const _LogoutButton();
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logOut() async {
+      await FirebaseAuth.instance.signOut();
+      await context.navigateToPage(const AuthPage());
+    }
+
     return TextButton.icon(
       style: TextButton.styleFrom(
         foregroundColor: ColorConst.error,
       ),
-      onPressed: () {},
+      onPressed: logOut,
       icon: const Icon(Icons.logout_outlined),
       label: Text(AppText.logout),
     );

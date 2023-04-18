@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,11 +14,19 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     }
     final token = await user.getIdToken();
     saveUserToken(token);
+    await saveUserFirebase(user);
     state = state.copyWith(isRedirecHome: true);
   }
 
   void saveUserToken(String token) {
     CacheItems.token.write(token);
+  }
+
+  Future<void> saveUserFirebase(User? user) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .set({'email': user.email, 'name': user.displayName ?? 'Nameless'});
   }
 }
 
