@@ -7,4 +7,5 @@ class ColorConst {
   static Color grey = const Color(0xff363636);
   static Color darkgrey = const Color(0xff1D1D1D);
   static Color priorityMedium = const Color(0xffFFBF00);
+  static Color error = const Color(0xffFF4949);
 }

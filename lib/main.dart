@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:will_do_full_app/feature/home/home_view.dart';
+import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/initialize/app_start_init.dart';
 import 'package:will_do_full_app/product/initialize/app_theme.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppText.appName,
-      home: const HomeView(),
+      home: const ProfileView(),
       theme: AppTheme().theme,
     );
   }

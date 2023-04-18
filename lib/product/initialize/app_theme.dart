@@ -22,5 +22,18 @@ class AppTheme {
             elevation: MaterialStateProperty.all<double>(20),
           ),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(ColorConst.grey),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.all(18),
+            ),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+        ),
       );
 }
