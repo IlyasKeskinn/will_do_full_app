@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
+import 'package:will_do_full_app/product/model/todos.dart';
 
 // ignore: must_be_immutable
-class ToDoTileWidget extends StatelessWidget {
+class ToDoTileWidget extends StatefulWidget {
   const ToDoTileWidget({
     super.key,
-    required this.taskName,
-    required this.isTaskCompleted,
+    required this.todoItem,
   });
-  final String taskName;
-  final bool isTaskCompleted;
+  final Todos? todoItem;
 
+  @override
+  State<ToDoTileWidget> createState() => _ToDoTileWidgetState();
+}
+
+class _ToDoTileWidgetState extends State<ToDoTileWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -36,8 +40,15 @@ class ToDoTileWidget extends StatelessWidget {
         child: Row(
           children: [
             Checkbox(
-              value: isTaskCompleted,
-              onChanged: (value) {},
+              //fix
+              value: widget.todoItem?.complete,
+              onChanged: (value) {
+                setState(() {
+                  value = value!;
+                  print('basildi');
+                  print(value.toString());
+                });
+              },
               shape: const CircleBorder(),
               activeColor: ColorConst.grey,
             ),
@@ -45,16 +56,19 @@ class ToDoTileWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  taskName,
+                  //fix
+                  widget.todoItem?.title.toCapitalized() ?? 'No Title',
                   style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                        decoration: isTaskCompleted
+                        decoration: widget.todoItem?.complete == 1
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
                         decorationThickness: 3,
                       ),
                 ),
                 _emptyHeightBoxLow(context),
-                const _TodoTileFooter()
+                _TodoTileFooter(
+                  todoItem: widget.todoItem,
+                )
               ],
             ),
           ],
@@ -68,7 +82,8 @@ class ToDoTileWidget extends StatelessWidget {
 }
 
 class _TodoTileFooter extends StatelessWidget {
-  const _TodoTileFooter();
+  const _TodoTileFooter({required this.todoItem});
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +98,11 @@ class _TodoTileFooter extends StatelessWidget {
           ),
           Row(
             children: [
-              const _CategoryChip(),
+              _CategoryChip(
+                todoItem: todoItem,
+              ),
               context.emptySizedWidthBoxLow,
-              const _PriorityChip(),
+              _PriorityChip(todoItem: todoItem),
             ],
           )
         ],
@@ -95,7 +112,8 @@ class _TodoTileFooter extends StatelessWidget {
 }
 
 class _PriorityChip extends StatelessWidget {
-  const _PriorityChip();
+  const _PriorityChip({required this.todoItem});
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +134,8 @@ class _PriorityChip extends StatelessWidget {
 }
 
 class _CategoryChip extends StatelessWidget {
-  const _CategoryChip();
+  const _CategoryChip({required this.todoItem});
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +153,8 @@ class _CategoryChip extends StatelessWidget {
           children: [
             const Icon(Icons.work_outline),
             context.emptySizedWidthBoxLow,
-            const Text('Work')
+            //fix
+            Text(todoItem?.category.toCapitalized() ?? 'None Category')
           ],
         ),
       ),

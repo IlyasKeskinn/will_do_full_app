@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
+import 'package:will_do_full_app/feature/home/home_provider.dart';
 import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -8,14 +10,26 @@ import 'package:will_do_full_app/product/widget/homepage/todo_tile.dart';
 import 'package:will_do_full_app/product/widget/text/subtitle_text.dart';
 import 'package:will_do_full_app/product/widget/text/title_text.dart';
 
-class HomeView extends StatefulWidget {
+final _homeProvider = StateNotifierProvider<HomeProvider, HomeState>((ref) {
+  return HomeProvider();
+});
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends ConsumerState<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => ref.read(_homeProvider.notifier).fetchTodos(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +59,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   context.emptySizedHeightBoxLow,
-                  const Todos()
+                  const TodoItems()
                 ],
               ),
             )
@@ -57,23 +71,23 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class Todos extends StatelessWidget {
-  const Todos({
+class TodoItems extends ConsumerWidget {
+  const TodoItems({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todoItems = ref.watch(_homeProvider).todos;
     return SizedBox(
       height: context.dynamicHeight(0.7),
       child: ListView.builder(
-        itemCount: 14,
+        itemCount: todoItems?.length ?? 0,
         itemBuilder: (context, index) {
           return Padding(
             padding: context.onlyTopPaddingNormal,
-            child: const ToDoTileWidget(
-              taskName: 'taskName',
-              isTaskCompleted: false,
+            child: ToDoTileWidget(
+              todoItem: todoItems?[index],
             ),
           );
         },

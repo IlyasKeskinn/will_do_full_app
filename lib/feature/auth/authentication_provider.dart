@@ -23,10 +23,11 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   }
 
   Future<void> saveUserFirebase(User? user) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .set({'email': user.email, 'name': user.displayName ?? 'Nameless'});
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+      'email': user.email,
+      'name': user.displayName ?? 'Nameless', 
+      'userId': user.uid
+    });
   }
 }
 
