@@ -8,6 +8,13 @@ class AppText {
   static String homehowAddTask = 'Tap + to add your tasks';
   static String homesearchTask = 'Search Your Task ';
 
+  //add todos
+  static String addTask = 'Add Task';
+  static String priorityNo = 'No';
+  static String priorityLow = 'Low';
+  static String priorityMedium = 'Medium';
+  static String priorityHigh = 'High';
+
   //profie
   static String profileTitlte = 'Profile';
   static String profileTaskLeft = 'Task left';

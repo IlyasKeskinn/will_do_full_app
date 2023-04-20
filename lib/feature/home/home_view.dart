@@ -41,29 +41,31 @@ class _HomeViewState extends ConsumerState<HomeView> {
           backgroundColor: ColorConst.primaryColor,
           child: const Icon(Icons.add),
         ),
-        body: Column(
-          children: [
-            const _Appbar(), //_EmptyTask(),
-            Padding(
-              padding: context.paddingNormal,
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      contentPadding: context.paddingNormal,
-                      fillColor: ColorConst.darkgrey,
-                      filled: true,
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.search),
-                      hintText: AppText.homesearchTask,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const _Appbar(), //_EmptyTask(),
+              Padding(
+                padding: context.paddingNormal,
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        contentPadding: context.paddingNormal,
+                        fillColor: ColorConst.darkgrey,
+                        filled: true,
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(Icons.search),
+                        hintText: AppText.homesearchTask,
+                      ),
                     ),
-                  ),
-                  context.emptySizedHeightBoxLow,
-                  const TodoItems()
-                ],
-              ),
-            )
-          ],
+                    context.emptySizedHeightBoxLow,
+                    const TodoItems()
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
         bottomNavigationBar: const _NavigationBar(),
       ),

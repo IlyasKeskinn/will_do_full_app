@@ -59,7 +59,7 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
                   //fix
                   widget.todoItem?.title.toCapitalized() ?? 'No Title',
                   style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                        decoration: widget.todoItem?.complete == 1
+                        decoration: widget.todoItem?.complete ?? false
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
                         decorationThickness: 3,
