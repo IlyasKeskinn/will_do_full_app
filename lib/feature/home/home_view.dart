@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
+import 'package:will_do_full_app/feature/add_todos/add_task_view.dart';
 import 'package:will_do_full_app/feature/home/home_provider.dart';
 import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
@@ -37,7 +38,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           foregroundColor: ColorConst.white,
-          onPressed: () {},
+          onPressed: () {
+            context.navigateToPage(const AddTaskView());
+          },
           backgroundColor: ColorConst.primaryColor,
           child: const Icon(Icons.add),
         ),

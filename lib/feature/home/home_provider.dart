@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:will_do_full_app/product/model/category.dart';
+import 'package:will_do_full_app/product/model/categories.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
 import 'package:will_do_full_app/product/utility/exception/custom_exception.dart';
 import 'package:will_do_full_app/product/utility/firebase/firebase_collection.dart';
@@ -31,6 +31,8 @@ class HomeProvider extends StateNotifier<HomeState> with FirebaseUtily {
         }
       },
     ).get();
+
+    
 
     final values = response.docs.map((e) => e.data()).toList();
     state = state.copyWith(todos: values);

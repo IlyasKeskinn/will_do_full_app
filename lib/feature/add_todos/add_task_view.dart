@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
+import 'package:will_do_full_app/feature/add_todos/add_task_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
+import 'package:will_do_full_app/product/model/categories.dart';
+
+final _addTaskProvider =
+    StateNotifierProvider<AddTaskProvider, AddTaskState>((ref) {
+  return AddTaskProvider();
+});
 
 class AddTaskView extends ConsumerStatefulWidget {
   const AddTaskView({super.key});
@@ -12,6 +19,34 @@ class AddTaskView extends ConsumerStatefulWidget {
 }
 
 class _AddTaskViewState extends ConsumerState<AddTaskView> {
+  DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    FetchCategory();
+  }
+
+  Future<void> FetchCategory() async {
+    await Future.microtask(
+      () => ref.read(_addTaskProvider.notifier).FetchCategory(),
+    );
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020, 8),
+      lastDate: DateTime(2100, 12),
+    );
+    if (picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +87,16 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
                   onPressed: () {},
                   child: const Text('Add Task'),
                 ),
-              )
+              ),
+              Text(
+                _selectedDate == null
+                    ? 'No date selected.'
+                    : 'Selected Date: ${_selectedDate.toString()}',
+              ),
+              ElevatedButton(
+                onPressed: () => selectDate(context),
+                child: const Text('Select date'),
+              ),
             ],
           ),
         ),
@@ -61,22 +105,22 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
   }
 }
 
-class _Categories extends StatelessWidget {
+class _Categories extends ConsumerWidget {
   const _Categories();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final category = ref.watch(_addTaskProvider).category;
     return SizedBox(
       height: 96,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 12,
+        itemCount: category?.length ?? 0,
         itemBuilder: (context, index) {
           return Padding(
             padding: context.paddingLow,
             child: _CategoryChip(
-              categoryName: 'Sport',
-              categoryColor: ColorConst.categoryColorSports,
+              categoryItems: category?[index],
             ),
           );
         },
@@ -87,20 +131,22 @@ class _Categories extends StatelessWidget {
 
 class _CategoryChip extends StatelessWidget {
   const _CategoryChip({
-    required this.categoryName,
-    required this.categoryColor,
+    required this.categoryItems,
   });
-  final String categoryName;
-  final Color categoryColor;
+  final Categories? categoryItems;
 
   @override
   Widget build(BuildContext context) {
+    final hexColor = '${categoryItems?.categoryColor ?? #ffffff} ';
+    final categoryBackgroundColor =
+        Color(int.parse(hexColor.substring(1), radix: 16) + 0xFF000000);
+
     return Chip(
       elevation: 2,
       padding: const EdgeInsets.all(14),
-      label: Text(categoryName),
+      label: Text(categoryItems?.name ?? 'No name'),
       labelStyle: TextStyle(color: ColorConst.white),
-      backgroundColor: categoryColor,
+      backgroundColor: categoryBackgroundColor,
     );
   }
 }
