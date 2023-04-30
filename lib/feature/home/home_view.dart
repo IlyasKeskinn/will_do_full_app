@@ -27,7 +27,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void initState() {
     super.initState();
     Future.microtask(
-      () => ref.read(_homeProvider.notifier).fetchTodos(),
+      () => ref.read(_homeProvider.notifier).fetchItems(),
     );
   }
 
@@ -38,8 +38,13 @@ class _HomeViewState extends ConsumerState<HomeView> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           foregroundColor: ColorConst.white,
-          onPressed: () {
-            context.navigateToPage(const AddTaskView());
+          onPressed: () async {
+            final response = await context.navigateToPage<bool>(
+                const AddTaskView(),
+                type: SlideType.LEFT);
+            if (response ?? false) {
+              await ref.read(_homeProvider.notifier).fetchItems();
+            }
           },
           backgroundColor: ColorConst.primaryColor,
           child: const Icon(Icons.add),

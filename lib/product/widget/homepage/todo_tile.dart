@@ -52,6 +52,7 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
               shape: const CircleBorder(),
               activeColor: ColorConst.grey,
             ),
+            // Text(widget.todoItem?.dateMilliseconds.toString() ?? ''),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -119,7 +120,7 @@ class _PriorityChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorConst.priorityMedium,
+        color: ColorConst.error,
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Padding(

@@ -4,6 +4,7 @@ enum FirebaseCollection {
   version,
   users,
   category,
+  priorities,
   todos;
 
   CollectionReference get reference =>

@@ -10,10 +10,14 @@ class AppText {
 
   //add todos
   static String addTask = 'Add Task';
-  static String priorityNo = 'No';
-  static String priorityLow = 'Low';
-  static String priorityMedium = 'Medium';
-  static String priorityHigh = 'High';
+  static String addTaskTitle = 'Title';
+  static String priority = 'Priority';
+  static String description = 'Description';
+  static String category = 'Category';
+  
+  static String titleNotEmpty = 'Title field cannot be empty';
+
+
 
   //profie
   static String profileTitlte = 'Profile';

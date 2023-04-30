@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:will_do_full_app/product/utility/base/base_firabase_model.dart';
 
+@immutable
 class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
   Todos({
     this.title,
@@ -10,6 +12,8 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
     this.complete,
     this.priorty,
     this.id,
+    // this.dateMilliseconds,
+    // this.timeMilliseconds,
   });
   @override
   String? title;
@@ -20,10 +24,21 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
   int? priorty;
   @override
   String? id;
+  // int? dateMilliseconds;
+  // int? timeMilliseconds;
 
   @override
-  List<Object?> get props =>
-      [title, description, category, categoryId, complete, priorty, id];
+  List<Object?> get props => [
+        title,
+        description,
+        category,
+        categoryId,
+        complete,
+        priorty,
+        id,
+        // dateMilliseconds,
+        // timeMilliseconds
+      ];
 
   Todos copyWith({
     String? title,
@@ -33,6 +48,8 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
     bool? complete,
     int? priorty,
     String? id,
+    // int? dateMilliseconds,
+    // int? timeMilliseconds,
   }) {
     return Todos(
       title: title ?? this.title,
@@ -42,6 +59,8 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       complete: complete ?? this.complete,
       priorty: priorty ?? this.priorty,
       id: id ?? this.id,
+      // dateMilliseconds: dateMilliseconds ?? this.dateMilliseconds,
+      // timeMilliseconds: timeMilliseconds ?? this.timeMilliseconds,
     );
   }
 
@@ -54,6 +73,8 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       'complete': complete,
       'priorty': priorty,
       'id': id,
+      // 'dateMilliseconds': dateMilliseconds,
+      // 'timeMilliseconds': timeMilliseconds
     };
   }
 
@@ -67,6 +88,8 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       complete: json['complete'] as bool?,
       priorty: json['priorty'] as int?,
       id: json['id'] as String?,
+      // dateMilliseconds: json['dateMilliseconds'] as int?,
+      // timeMilliseconds: json['timeMilliseconds'] as int?,
     );
   }
 }

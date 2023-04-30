@@ -15,6 +15,11 @@ class HomeProvider extends StateNotifier<HomeState> with FirebaseUtily {
   List<Todos> _todoList = [];
   List<Todos> get todoList => _todoList;
 
+  Future<void> fetchItems() async {
+    await fetchTodos();
+    await fetchCategory();
+  }
+
   Future<void> fetchTodos() async {
     final response = await FirebaseCollection.users.reference
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -31,8 +36,6 @@ class HomeProvider extends StateNotifier<HomeState> with FirebaseUtily {
         }
       },
     ).get();
-
-    
 
     final values = response.docs.map((e) => e.data()).toList();
     state = state.copyWith(todos: values);
