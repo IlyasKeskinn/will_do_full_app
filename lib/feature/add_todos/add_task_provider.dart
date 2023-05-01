@@ -77,7 +77,7 @@ class AddTaskProvider extends StateNotifier<AddTaskState> with FirebaseUtily {
               title: todos!.title,
               description: todos.description,
               category: todos.category,
-              categoryId: todos.categoryId,
+              categoryColor: todos.categoryColor,
               complete: todos.complete,
               priorty: todos.priorty,
             ).toJson(),

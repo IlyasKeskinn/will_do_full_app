@@ -118,9 +118,24 @@ class _PriorityChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var bgColor = ColorConst.primaryColor;
+    switch (todoItem?.priorty) {
+      case 0:
+        bgColor = ColorConst.priorityNone;
+        break;
+      case 1:
+        bgColor = ColorConst.priorityLow;
+        break;
+      case 2:
+        bgColor = ColorConst.priorityMedium;
+        break;
+      case 3:
+        bgColor = ColorConst.priorityHigh;
+        break;
+    }
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorConst.error,
+        color: bgColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Padding(
@@ -140,9 +155,12 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hexColor = '${todoItem?.categoryColor ?? #ffffff} ';
+    final categoryBackgroundColor =
+        Color(int.parse(hexColor.substring(1), radix: 16) + 0xFF000000);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorConst.primaryColor,
+        color: categoryBackgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -152,7 +170,6 @@ class _CategoryChip extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.work_outline),
             context.emptySizedWidthBoxLow,
             //fix
             Text(todoItem?.category.toCapitalized() ?? 'None Category')

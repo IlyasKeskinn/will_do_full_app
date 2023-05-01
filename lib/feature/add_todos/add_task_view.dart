@@ -4,9 +4,9 @@ import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/feature/add_todos/add_task_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
-import 'package:will_do_full_app/product/model/categories.dart';
-import 'package:will_do_full_app/product/model/priorities.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
+import 'package:will_do_full_app/product/widget/chips/category_chip.dart';
+import 'package:will_do_full_app/product/widget/chips/priority_chip.dart';
 
 final _addTaskProvider =
     StateNotifierProvider<AddTaskProvider, AddTaskState>((ref) {
@@ -63,8 +63,14 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
           .watch(_addTaskProvider.notifier)
           .priorities[selectedPriorityIndex]
           .priorityLevel,
-      category: ref.watch(_addTaskProvider.notifier).categories[1].name,
-      categoryId: ref.watch(_addTaskProvider.notifier).categories[1].id,
+      category: ref
+          .watch(_addTaskProvider.notifier)
+          .categories[selectedCategoryIndex]
+          .name,
+      categoryColor: ref
+          .watch(_addTaskProvider.notifier)
+          .categories[selectedCategoryIndex]
+          .categoryColor,
     );
     return await ref.watch(_addTaskProvider.notifier).addTask(todos);
   }
@@ -125,7 +131,7 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
                                   updateLoading();
                                   final response = await saveTodo();
                                   updateLoading();
-                                  context.pop<bool>(response);
+                                  await context.pop<bool>(response);
                                 },
                           child: Text(AppText.addTask.toCapitalized()),
                         ),
@@ -230,7 +236,7 @@ class _CategoriesWidgetState extends ConsumerState<CategoriesWidget> {
                   selectedCategoryIndex = index;
                 });
               },
-              child: _CategoryChip(
+              child: CategoryChip(
                 categoryItems: category?[index],
                 isSelected: selectedCategoryIndex == index,
               ),
@@ -238,32 +244,6 @@ class _CategoriesWidgetState extends ConsumerState<CategoriesWidget> {
           );
         },
       ),
-    );
-  }
-}
-
-class _CategoryChip extends StatelessWidget {
-  const _CategoryChip({
-    required this.categoryItems,
-    this.isSelected = false,
-  });
-  final Categories? categoryItems;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final hexColor = '${categoryItems?.categoryColor ?? #ffffff} ';
-    final categoryBackgroundColor =
-        Color(int.parse(hexColor.substring(1), radix: 16) + 0xFF000000);
-
-    return Chip(
-      elevation: 2,
-      padding: const EdgeInsets.all(14),
-      label: Text(categoryItems?.name ?? 'None category'),
-      labelStyle: TextStyle(color: ColorConst.white),
-      backgroundColor: isSelected
-          ? categoryBackgroundColor.withOpacity(0.7)
-          : categoryBackgroundColor.withOpacity(0.2),
     );
   }
 }
@@ -296,61 +276,13 @@ class _PriorityLevelsState extends ConsumerState<_PriorityLevels> {
                   selectedPriorityIndex = index;
                 });
               },
-              child: _PriorityCard(
+              child: PriorityChip(
                 priorityItem: priority?[index],
                 isSelected: selectedPriorityIndex == index,
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _PriorityCard extends StatelessWidget {
-  const _PriorityCard({
-    required this.priorityItem,
-    this.isSelected = false,
-  });
-  final Priorities? priorityItem;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final hexColor = '${priorityItem?.color ?? #ffffff} ';
-    final priorityColor =
-        Color(int.parse(hexColor.substring(1), radix: 16) + 0xFF000000);
-
-    return Card(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: isSelected ? priorityColor : priorityColor.withOpacity(0.3),
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      elevation: 0,
-      color: ColorConst.darkgreyTw,
-      child: SizedBox(
-        height: 64,
-        width: 64,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.flag_outlined,
-              color:
-                  isSelected ? priorityColor : priorityColor.withOpacity(0.3),
-            ),
-            Text(
-              priorityItem?.name ?? 'None',
-              style: TextStyle(
-                color:
-                    isSelected ? priorityColor : priorityColor.withOpacity(0.3),
-              ),
-            )
-          ],
-        ),
       ),
     );
   }

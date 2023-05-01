@@ -8,7 +8,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
     this.title,
     this.description,
     this.category,
-    this.categoryId,
+    this.categoryColor,
     this.complete,
     this.priorty,
     this.id,
@@ -19,7 +19,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
   String? title;
   String? description;
   String? category;
-  String? categoryId;
+  String? categoryColor;
   bool? complete;
   int? priorty;
   @override
@@ -32,7 +32,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
         title,
         description,
         category,
-        categoryId,
+        categoryColor,
         complete,
         priorty,
         id,
@@ -55,7 +55,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       title: title ?? this.title,
       description: description ?? this.description,
       category: category ?? this.category,
-      categoryId: categoryId ?? this.categoryId,
+      categoryColor: categoryId ?? this.categoryColor,
       complete: complete ?? this.complete,
       priorty: priorty ?? this.priorty,
       id: id ?? this.id,
@@ -69,7 +69,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       'title': title,
       'description': description,
       'category': category,
-      'categoryId': categoryId,
+      'categoryId': categoryColor,
       'complete': complete,
       'priorty': priorty,
       'id': id,
@@ -84,7 +84,7 @@ class Todos extends Equatable with IdModel, BaseFirebaseModel<Todos> {
       title: json['title'] as String?,
       description: json['description'] as String?,
       category: json['category'] as String?,
-      categoryId: json['categoryId'] as String?,
+      categoryColor: json['categoryId'] as String?,
       complete: json['complete'] as bool?,
       priorty: json['priorty'] as int?,
       id: json['id'] as String?,

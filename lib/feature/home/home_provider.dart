@@ -17,7 +17,6 @@ class HomeProvider extends StateNotifier<HomeState> with FirebaseUtily {
 
   Future<void> fetchItems() async {
     await fetchTodos();
-    await fetchCategory();
   }
 
   Future<void> fetchTodos() async {
@@ -41,21 +40,11 @@ class HomeProvider extends StateNotifier<HomeState> with FirebaseUtily {
     state = state.copyWith(todos: values);
     _todoList = values.toList();
   }
-
-  Future<void> fetchCategory() async {
-    final response = await fetchList<Categories, Categories>(
-      Categories(),
-      FirebaseCollection.category,
-    );
-
-    state = state.copyWith(category: response!.toList());
-  }
 }
 
 class HomeState extends Equatable {
-  const HomeState({this.todos, this.category});
+  const HomeState({this.todos});
   final List<Todos>? todos;
-  final List<Categories>? category;
 
   HomeState copyWith({
     List<Todos>? todos,
@@ -63,10 +52,9 @@ class HomeState extends Equatable {
   }) {
     return HomeState(
       todos: todos ?? this.todos,
-      category: category ?? this.category,
     );
   }
 
   @override
-  List<Object?> get props => [todos, category];
+  List<Object?> get props => [todos];
 }
