@@ -5,6 +5,7 @@ import 'package:will_do_full_app/enums/image_constants.dart';
 import 'package:will_do_full_app/feature/add_todos/add_task_view.dart';
 import 'package:will_do_full_app/feature/home/home_provider.dart';
 import 'package:will_do_full_app/feature/profile/profile_view.dart';
+import 'package:will_do_full_app/feature/task_screen/task_screen_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/widget/homepage/todo_tile.dart';
@@ -40,8 +41,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
           foregroundColor: ColorConst.white,
           onPressed: () async {
             final response = await context.navigateToPage<bool>(
-                const AddTaskView(),
-                type: SlideType.LEFT);
+              const AddTaskView(),
+              type: SlideType.LEFT,
+            );
             if (response ?? false) {
               await ref.read(_homeProvider.notifier).fetchItems();
             }
@@ -96,8 +98,13 @@ class TodoItems extends ConsumerWidget {
         itemBuilder: (context, index) {
           return Padding(
             padding: context.onlyTopPaddingNormal,
-            child: ToDoTileWidget(
-              todoItem: todoItems?[index],
+            child: InkWell(
+              onTap: () {
+                context.navigateToPage(const TaskScreenView());
+              },
+              child: ToDoTileWidget(
+                todoItem: todoItems?[index],
+              ),
             ),
           );
         },

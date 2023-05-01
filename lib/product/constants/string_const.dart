@@ -14,10 +14,8 @@ class AppText {
   static String priority = 'Priority';
   static String description = 'Description';
   static String category = 'Category';
-  
+
   static String titleNotEmpty = 'Title field cannot be empty';
-
-
 
   //profie
   static String profileTitlte = 'Profile';
@@ -31,4 +29,10 @@ class AppText {
   static String profileHelpFeedback = 'Help & Feedback';
   static String profileSupportUS = 'Support US';
   static String logout = 'Log out';
+
+  //detail task
+  static String taskCategory = 'Task Category :';
+  static String taskPriority = 'Task Priority :';
+  static String deleteTask = 'Delete Task ';
+  static String editTask = 'Edit Task ';
 }
