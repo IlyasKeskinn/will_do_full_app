@@ -7,6 +7,9 @@ class AppText {
   static String homeWhatdo = 'What do you want to do today?';
   static String homehowAddTask = 'Tap + to add your tasks';
   static String homesearchTask = 'Search Your Task ';
+  static String cancel = 'Cancel ';
+  static String save = 'Save ';
+
 
   //add todos
   static String addTask = 'Add Task';

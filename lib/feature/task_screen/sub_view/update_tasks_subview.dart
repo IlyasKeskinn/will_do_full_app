@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
+import 'package:will_do_full_app/feature/home/home_view.dart';
 import 'package:will_do_full_app/feature/provider/category_provider.dart';
 import 'package:will_do_full_app/feature/provider/priority_provider.dart';
 import 'package:will_do_full_app/feature/provider/todos_provider.dart';
-import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
+import 'package:will_do_full_app/product/widget/buttons/primary_button.dart';
 import 'package:will_do_full_app/product/widget/chips/category_chip.dart';
 import 'package:will_do_full_app/product/widget/chips/priority_chip.dart';
 import 'package:will_do_full_app/product/widget/text_field/text_area.dart';
@@ -22,15 +23,19 @@ final _priorityProvider =
   return PriorityProvider();
 });
 
-class AddTaskView extends ConsumerStatefulWidget {
-  const AddTaskView({super.key});
+class UpdateTasksSubView extends ConsumerStatefulWidget {
+  const UpdateTasksSubView({
+    super.key,
+    required this.todoItem,
+  });
+  final Todos? todoItem;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddTaskViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UpdateTasksSubViewState();
 }
 
-class _AddTaskViewState extends ConsumerState<AddTaskView> {
-  //DateTime? _selectedDate;
+class _UpdateTasksSubViewState extends ConsumerState<UpdateTasksSubView> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
@@ -46,6 +51,8 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
     super.initState();
     fetchCategory();
     fetchPriority();
+    titleController.text = widget.todoItem?.title ?? '';
+    descController.text = widget.todoItem?.description ?? '';
     setState(() {});
   }
 
@@ -61,45 +68,32 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
     );
   }
 
-  // Future<void> selectDate(BuildContext context) async {
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2020, 8),
-  //     lastDate: DateTime(2100, 12),
-  //   );
-  //   if (picked != _selectedDate) {
-  //     setState(() {
-  //       _selectedDate = picked;
-  //     });
-  //   }
-  // }
+  void updateLoading() {
+    setState(() {
+      isLoading = !isLoading;
+    });
+  }
 
-  Future<bool> saveTodo() async {
+  Future<bool> updateTask() async {
     final todos = Todos(
+      id: widget.todoItem?.id,
       title: titleController.text,
       description: descController.text,
       complete: false,
       priorty: ref
           .watch(_priorityProvider.notifier)
-          .priorities[selectedPriorityIndex]
+          .priorities[_selectedPriorityIndex]
           .priorityLevel,
       category: ref
           .watch(_categoryProvider.notifier)
-          .categories[selectedCategoryIndex]
+          .categories[_selectedCategoryIndex]
           .name,
       categoryColor: ref
           .watch(_categoryProvider.notifier)
-          .categories[selectedCategoryIndex]
+          .categories[_selectedCategoryIndex]
           .categoryColor,
     );
-    return await ref.watch(_todosProvider.notifier).addTask(todos);
-  }
-
-  void updateLoading() {
-    setState(() {
-      isLoading = !isLoading;
-    });
+    return await ref.watch(_todosProvider.notifier).updateTask(todos);
   }
 
   @override
@@ -111,15 +105,14 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text(AppText.addTask)),
-      body: Stack(
-        children: [
-          Opacity(
-            opacity: isLoading ? 0.2 : 1,
-            child: IgnorePointer(
-              ignoring: isLoading,
+    return Stack(
+      children: [
+        Opacity(
+          opacity: isLoading ? 0.2 : 1,
+          child: IgnorePointer(
+            ignoring: isLoading,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 1.4,
               child: Form(
                 key: formkey,
                 autovalidateMode: AutovalidateMode.always,
@@ -136,62 +129,59 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
                       ),
                       Text(AppText.priority.toCapitalized()),
                       context.emptySizedHeightBoxLow,
-                      const _PriorityLevels(),
+                      _PriorityLevels(
+                        priorityLevel: widget.todoItem?.priorty ?? 0,
+                      ),
                       context.emptySizedHeightBoxLow,
                       Text(AppText.description.toCapitalized()),
                       context.emptySizedHeightBoxLow,
-                      InputArea(
-                        controller: descController,
-                      ),
+                      InputArea(controller: descController),
                       Text(AppText.category.toCapitalized()),
                       const CategoriesWidget(),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConst.primaryColor,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(AppText.cancel.toCapitalized()),
+                            ),
                           ),
-                          onPressed: titleController.text.isNullOrEmpty
-                              ? null
-                              : () async {
-                                  updateLoading();
-                                  final response = await saveTodo();
-                                  updateLoading();
-                                  await context.pop<bool>(response);
-                                },
-                          child: Text(AppText.addTask.toCapitalized()),
-                        ),
-                      ),
-                      // Text(
-                      //   _selectedDate == null
-                      //       ? 'No date selected.'
-                      //       : 'Selected Date: ${_selectedDate.toString()}',
-                      // ),
-                      // ElevatedButton(
-                      //   onPressed: () => selectDate(context),
-                      //   child: const Text('Select date'),
-                      // ),
+                          context.emptySizedWidthBoxNormal,
+                          Expanded(
+                            child: PrimaryButton(
+                              value: AppText.save.toCapitalized(),
+                              click: () async {
+                                updateLoading();
+                                final response = await updateTask();
+                                updateLoading();
+                                await context.navigateToPage(const HomeView());
+                              },
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            )
-        ],
-      ),
+        ),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          )
+      ],
     );
   }
 }
 
-int selectedCategoryIndex = 0;
+int _selectedCategoryIndex = 0;
 
 class CategoriesWidget extends ConsumerStatefulWidget {
   const CategoriesWidget({super.key});
-
   @override
   _CategoriesWidgetState createState() => _CategoriesWidgetState();
 }
@@ -212,12 +202,12 @@ class _CategoriesWidgetState extends ConsumerState<CategoriesWidget> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedCategoryIndex = index;
+                  _selectedCategoryIndex = index;
                 });
               },
               child: CategoryChip(
                 categoryItems: category?[index],
-                isSelected: selectedCategoryIndex == index,
+                isSelected: _selectedCategoryIndex == index,
               ),
             ),
           );
@@ -228,15 +218,22 @@ class _CategoriesWidgetState extends ConsumerState<CategoriesWidget> {
 }
 
 class _PriorityLevels extends ConsumerStatefulWidget {
-  const _PriorityLevels();
+  const _PriorityLevels({required this.priorityLevel});
+  final int priorityLevel;
 
   @override
   _PriorityLevelsState createState() => _PriorityLevelsState();
 }
 
-int selectedPriorityIndex = 0;
+int _selectedPriorityIndex = 0;
 
 class _PriorityLevelsState extends ConsumerState<_PriorityLevels> {
+  @override
+  void initState() {
+    super.initState();
+    _selectedPriorityIndex = widget.priorityLevel;
+  }
+
   @override
   Widget build(BuildContext context) {
     final priority = ref.watch(_priorityProvider).priority;
@@ -252,12 +249,12 @@ class _PriorityLevelsState extends ConsumerState<_PriorityLevels> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedPriorityIndex = index;
+                  _selectedPriorityIndex = index;
                 });
               },
               child: PriorityChip(
                 priorityItem: priority?[index],
-                isSelected: selectedPriorityIndex == index,
+                isSelected: _selectedPriorityIndex == index,
               ),
             ),
           );

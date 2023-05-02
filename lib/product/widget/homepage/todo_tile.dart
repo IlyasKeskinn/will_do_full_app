@@ -20,7 +20,7 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      endActionPane: ActionPane(
+      startActionPane: ActionPane(
         motion: const StretchMotion(),
         children: [
           SlidableAction(

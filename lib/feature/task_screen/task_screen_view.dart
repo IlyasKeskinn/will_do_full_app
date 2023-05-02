@@ -2,20 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:will_do_full_app/feature/provider/category_provider.dart';
+import 'package:will_do_full_app/feature/provider/priority_provider.dart';
+import 'package:will_do_full_app/feature/task_screen/sub_view/update_tasks_subview.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
+import 'package:will_do_full_app/product/model/todos.dart';
 import 'package:will_do_full_app/product/widget/buttons/primary_button.dart';
 import 'package:will_do_full_app/product/widget/text/subtext.dart';
 import 'package:will_do_full_app/product/widget/text/subtitle_text.dart';
 
-class TaskScreenView extends ConsumerStatefulWidget {
-  const TaskScreenView({super.key});
+final _categoryProvider =
+    StateNotifierProvider<CategoryProvider, CategoryState>((ref) {
+  return CategoryProvider();
+});
 
+final _priorityProvider =
+    StateNotifierProvider<PriorityProvider, PriorityState>((ref) {
+  return PriorityProvider();
+});
+
+class TaskScreenView extends ConsumerStatefulWidget {
+  const TaskScreenView({super.key, required this.todosItem});
+
+  final Todos? todosItem;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TaskScreenViewState();
 }
 
 class _TaskScreenViewState extends ConsumerState<TaskScreenView> {
+  @override
+  void initState() {
+    super.initState();
+    fetchCategory();
+    fetchPriority();
+    setState(() {});
+  }
+
+  Future<void> fetchCategory() async {
+    await Future.microtask(
+      () => ref.read(_categoryProvider.notifier).fetchItems(),
+    );
+  }
+
+  Future<void> fetchPriority() async {
+    await Future.microtask(
+      () => ref.read(_priorityProvider.notifier).fetchItems(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,15 +63,38 @@ class _TaskScreenViewState extends ConsumerState<TaskScreenView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             context.emptySizedHeightBoxLow3x,
-            const TaskTitleDesc(),
+            TaskTitleDesc(todoItem: widget.todosItem),
+            context.emptySizedHeightBoxLow,
+            Padding(
+              padding: context.onlyLeftPaddingMedium,
+              child: SubText(
+                value: widget.todosItem?.description ?? '',
+              ),
+            ),
             context.emptySizedHeightBoxLow3x,
-            const TaskCategory(),
+            TaskCategory(todoItem: widget.todosItem),
             context.emptySizedHeightBoxLow3x,
-            const TaskPriority(),
+            TaskPriority(todoItem: widget.todosItem),
             context.emptySizedHeightBoxLow3x,
             const DeleteTask(),
             const Spacer(),
-            PrimaryButton(value: AppText.editTask, click: () {})
+            PrimaryButton(
+              value: AppText.editTask,
+              click: () {
+                final response = showModalBottomSheet(
+                  barrierColor: ColorConst.darkgrey.withOpacity(0.9),
+                  backgroundColor: ColorConst.backgrounColor,
+                  isScrollControlled: true,
+                  isDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return UpdateTasksSubView(
+                      todoItem: widget.todosItem,
+                    );
+                  },
+                );
+              },
+            )
           ],
         ),
       ),
@@ -67,7 +125,9 @@ class DeleteTask extends StatelessWidget {
 class TaskTitleDesc extends StatelessWidget {
   const TaskTitleDesc({
     super.key,
+    required this.todoItem,
   });
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
@@ -75,33 +135,17 @@ class TaskTitleDesc extends StatelessWidget {
       children: [
         Checkbox(
           //fix
-          value: false,
+          value: todoItem?.complete ?? false,
           onChanged: (value) {},
           shape: const CircleBorder(),
           activeColor: ColorConst.grey,
         ),
         Expanded(
           flex: 8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubtitleText(
-                value: 'Sonsuz Uzayin Derinliklerinde Kaybolan Galaksiler',
-              ),
-              context.emptySizedHeightBoxLow,
-              const SubText(
-                value:
-                    'Dünya, insanlık için yaşanılabilir tek gezegen olarak bilinmektedir. Ancak son yıllarda, çevre kirli',
-              )
-            ],
+          child: SubtitleText(
+            value: todoItem?.title ?? 'None Title',
           ),
         ),
-        const Spacer(),
-        IconButton(
-          // Use the MdiIcons class for the IconData
-          icon: const Icon(MdiIcons.pencilOutline),
-          onPressed: () {},
-        )
       ],
     );
   }
@@ -109,18 +153,20 @@ class TaskTitleDesc extends StatelessWidget {
 
 class TaskCategory extends StatelessWidget {
   const TaskCategory({
+    required this.todoItem,
     super.key,
   });
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         const Icon(MdiIcons.tagOutline),
-        Padding(
-          padding: context.onlyLeftPaddingNormal,
-          child: Expanded(
-            flex: 8,
+        Expanded(
+          flex: 8,
+          child: Padding(
+            padding: context.onlyLeftPaddingNormal,
             child: SubtitleText(value: AppText.taskCategory.toCapitalized()),
           ),
         ),
@@ -133,7 +179,7 @@ class TaskCategory extends StatelessWidget {
           child: Padding(
             padding:
                 context.verticalPaddingNormal + context.horizontalPaddingMedium,
-            child: const SubtitleText(value: 'Work'),
+            child: SubtitleText(value: todoItem?.category ?? 'None Category'),
           ),
         )
       ],
@@ -143,18 +189,35 @@ class TaskCategory extends StatelessWidget {
 
 class TaskPriority extends StatelessWidget {
   const TaskPriority({
+    required this.todoItem,
     super.key,
   });
+  final Todos? todoItem;
 
   @override
   Widget build(BuildContext context) {
+    var priority = '';
+    switch (todoItem?.priorty) {
+      case 0:
+        priority = 'No';
+        break;
+      case 1:
+        priority = 'Low';
+        break;
+      case 2:
+        priority = 'Medium';
+        break;
+      case 3:
+        priority = 'High';
+        break;
+    }
     return Row(
       children: [
         const Icon(MdiIcons.flagOutline),
-        Padding(
-          padding: context.onlyLeftPaddingNormal,
-          child: Expanded(
-            flex: 8,
+        Expanded(
+          flex: 8,
+          child: Padding(
+            padding: context.onlyLeftPaddingNormal,
             child: SubtitleText(value: AppText.taskPriority.toCapitalized()),
           ),
         ),
@@ -167,7 +230,7 @@ class TaskPriority extends StatelessWidget {
           child: Padding(
             padding:
                 context.verticalPaddingNormal + context.horizontalPaddingMedium,
-            child: const SubtitleText(value: 'No'),
+            child: SubtitleText(value: priority),
           ),
         )
       ],
