@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kartal/kartal.dart';
+import 'package:will_do_full_app/feature/home/home_view.dart';
+import 'package:will_do_full_app/feature/provider/todos_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
+
+final _todosProvider = StateNotifierProvider<TodosProvider, TodosState>((ref) {
+  return TodosProvider();
+});
 
 // ignore: must_be_immutable
 class ToDoTileWidget extends StatefulWidget {
@@ -22,14 +29,7 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
     return Slidable(
       startActionPane: ActionPane(
         motion: const StretchMotion(),
-        children: [
-          SlidableAction(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            onPressed: (context) {},
-            icon: Icons.delete,
-            backgroundColor: ColorConst.primaryColor,
-          )
-        ],
+        children: [_DeleteButton(todo: widget.todoItem!)],
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -80,6 +80,28 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
 
   SizedBox _emptyHeightBoxLow(BuildContext context) =>
       SizedBox(child: context.emptySizedHeightBoxLow);
+}
+
+class _DeleteButton extends ConsumerWidget {
+  const _DeleteButton({
+    required this.todo,
+  });
+
+  final Todos todo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SlidableAction(
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      onPressed: (context) {
+        ref.watch(_todosProvider.notifier).deleteTask(todo);
+        //fix
+        context.navigateToPage(const HomeView());
+      },
+      icon: Icons.delete,
+      backgroundColor: ColorConst.primaryColor,
+    );
+  }
 }
 
 class _TodoTileFooter extends StatelessWidget {

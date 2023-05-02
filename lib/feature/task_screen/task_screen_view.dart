@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:will_do_full_app/feature/home/home_view.dart';
 import 'package:will_do_full_app/feature/provider/category_provider.dart';
 import 'package:will_do_full_app/feature/provider/priority_provider.dart';
+import 'package:will_do_full_app/feature/provider/todos_provider.dart';
 import 'package:will_do_full_app/feature/task_screen/sub_view/update_tasks_subview.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -76,7 +78,7 @@ class _TaskScreenViewState extends ConsumerState<TaskScreenView> {
             context.emptySizedHeightBoxLow3x,
             TaskPriority(todoItem: widget.todosItem),
             context.emptySizedHeightBoxLow3x,
-            const DeleteTask(),
+            DeleteTask(todoItem: widget.todosItem!),
             const Spacer(),
             PrimaryButton(
               value: AppText.editTask,
@@ -102,20 +104,30 @@ class _TaskScreenViewState extends ConsumerState<TaskScreenView> {
   }
 }
 
-class DeleteTask extends StatelessWidget {
+final _todosProvider = StateNotifierProvider<TodosProvider, TodosState>((ref) {
+  return TodosProvider();
+});
+
+class DeleteTask extends ConsumerWidget {
   const DeleteTask({
     super.key,
+    required this.todoItem,
   });
 
+  final Todos todoItem;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextButton.icon(
       style: TextButton.styleFrom(
         textStyle: Theme.of(context).textTheme.titleMedium,
         padding: const EdgeInsets.all(0),
         foregroundColor: ColorConst.error,
       ),
-      onPressed: () {},
+      onPressed: () {
+        ref.watch(_todosProvider.notifier).deleteTask(todoItem);
+        context.navigateToPage(const HomeView());
+      },
       icon: const Icon(Icons.delete_outline),
       label: Text(AppText.deleteTask.toCapitalized()),
     );

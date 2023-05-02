@@ -61,6 +61,22 @@ class TodosProvider extends StateNotifier<TodosState> {
       return false; // return false if the update operation failed
     }
   }
+
+  Future<bool> deleteTask(Todos todos) async {
+    try {
+      final response = await FirebaseCollection.users.reference
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('todos')
+          .doc(todos.id)
+          .delete();
+
+      return true; // return true if the update operation was successful
+    } catch (e) {
+      //fix
+      print('Error updating task: $e');
+      return false; // return false if the update operation failed
+    }
+  }
 }
 
 class TodosState extends Equatable {
