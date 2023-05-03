@@ -12,7 +12,7 @@ final _todosProvider = StateNotifierProvider<TodosProvider, TodosState>((ref) {
 });
 
 // ignore: must_be_immutable
-class ToDoTileWidget extends StatefulWidget {
+class ToDoTileWidget extends ConsumerStatefulWidget {
   const ToDoTileWidget({
     super.key,
     required this.todoItem,
@@ -20,10 +20,10 @@ class ToDoTileWidget extends StatefulWidget {
   final Todos? todoItem;
 
   @override
-  State<ToDoTileWidget> createState() => _ToDoTileWidgetState();
+  ConsumerState<ToDoTileWidget> createState() => _ToDoTileWidgetState();
 }
 
-class _ToDoTileWidgetState extends State<ToDoTileWidget> {
+class _ToDoTileWidgetState extends ConsumerState<ToDoTileWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -40,13 +40,13 @@ class _ToDoTileWidgetState extends State<ToDoTileWidget> {
         child: Row(
           children: [
             Checkbox(
-              //fix
               value: widget.todoItem?.complete,
               onChanged: (value) {
                 setState(() {
-                  value = value!;
-                  print('basildi');
-                  print(value.toString());
+                  widget.todoItem?.complete = value ?? false;
+                  ref
+                      .read(_todosProvider.notifier)
+                      .toggleTask(widget.todoItem!);
                 });
               },
               shape: const CircleBorder(),

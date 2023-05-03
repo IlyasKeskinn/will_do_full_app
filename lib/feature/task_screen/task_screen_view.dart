@@ -134,7 +134,7 @@ class DeleteTask extends ConsumerWidget {
   }
 }
 
-class TaskTitleDesc extends StatelessWidget {
+class TaskTitleDesc extends ConsumerStatefulWidget {
   const TaskTitleDesc({
     super.key,
     required this.todoItem,
@@ -142,20 +142,29 @@ class TaskTitleDesc extends StatelessWidget {
   final Todos? todoItem;
 
   @override
+  ConsumerState<TaskTitleDesc> createState() => _TaskTitleDescState();
+}
+
+class _TaskTitleDescState extends ConsumerState<TaskTitleDesc> {
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Checkbox(
-          //fix
-          value: todoItem?.complete ?? false,
-          onChanged: (value) {},
+          value: widget.todoItem?.complete ?? false,
+          onChanged: (value) {
+            setState(() {
+              widget.todoItem?.complete = value ?? false;
+              ref.read(_todosProvider.notifier).toggleTask(widget.todoItem!);
+            });
+          },
           shape: const CircleBorder(),
           activeColor: ColorConst.grey,
         ),
         Expanded(
           flex: 8,
           child: SubtitleText(
-            value: todoItem?.title ?? 'None Title',
+            value: widget.todoItem?.title ?? 'None Title',
           ),
         ),
       ],

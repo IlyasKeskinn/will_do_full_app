@@ -100,12 +100,15 @@ class TodoItems extends ConsumerWidget {
             padding: context.onlyTopPaddingNormal,
             child: InkWell(
               onTap: () {
-                context.navigateToPage(
-                  type: SlideType.TOP,
-                  TaskScreenView(
-                    todosItem: todoItems![index],
-                  ),
-                );
+                context
+                    .navigateToPage(
+                      type: SlideType.TOP,
+                      TaskScreenView(
+                        todosItem: todoItems![index],
+                      ),
+                    )
+                    .then((value) =>
+                        ref.read(_homeProvider.notifier).fetchItems());
               },
               child: ToDoTileWidget(
                 todoItem: todoItems?[index],
