@@ -50,7 +50,6 @@ class TodosProvider extends StateNotifier<TodosState> {
         'description': todos.description,
         'category': todos.category,
         'categoryColor': todos.categoryColor,
-        'complete': todos.complete,
         'priorty': todos.priorty,
       });
 

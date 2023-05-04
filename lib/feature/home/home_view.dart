@@ -4,6 +4,7 @@ import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/enums/image_constants.dart';
 import 'package:will_do_full_app/feature/add_todos/add_task_view.dart';
 import 'package:will_do_full_app/feature/home/home_provider.dart';
+import 'package:will_do_full_app/feature/home/sub_view/home_search_delegate.dart';
 import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/feature/task_screen/task_screen_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
@@ -60,6 +61,15 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 child: Column(
                   children: [
                     TextField(
+                      onTap: () {
+                        showSearch(
+                          context: context,
+                          delegate: HomeSearchDelegate(
+                            todoItems:
+                                ref.watch(_homeProvider.notifier).todoList,
+                          ),
+                        );
+                      },
                       decoration: InputDecoration(
                         contentPadding: context.paddingNormal,
                         fillColor: ColorConst.darkgrey,
@@ -107,8 +117,9 @@ class TodoItems extends ConsumerWidget {
                         todosItem: todoItems![index],
                       ),
                     )
-                    .then((value) =>
-                        ref.read(_homeProvider.notifier).fetchItems());
+                    .then(
+                      (value) => ref.read(_homeProvider.notifier).fetchItems(),
+                    );
               },
               child: ToDoTileWidget(
                 todoItem: todoItems?[index],
