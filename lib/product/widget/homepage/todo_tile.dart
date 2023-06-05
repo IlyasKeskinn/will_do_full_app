@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/feature/home/home_view.dart';
-import 'package:will_do_full_app/feature/provider/todos_provider.dart';
+import 'package:will_do_full_app/product/provider/todos_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
 
@@ -96,7 +96,7 @@ class _DeleteButton extends ConsumerWidget {
       onPressed: (context) {
         ref.watch(_todosProvider.notifier).deleteTask(todo);
         //fix
-        context.navigateToPage(const HomeView());
+        context.navigateToPage(HomeView());
       },
       icon: Icons.delete,
       backgroundColor: ColorConst.primaryColor,

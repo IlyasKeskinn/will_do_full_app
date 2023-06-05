@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
-import 'package:will_do_full_app/feature/provider/category_provider.dart';
-import 'package:will_do_full_app/feature/provider/priority_provider.dart';
-import 'package:will_do_full_app/feature/provider/todos_provider.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
+import 'package:will_do_full_app/product/provider/category_provider.dart';
+import 'package:will_do_full_app/product/provider/priority_provider.dart';
+import 'package:will_do_full_app/product/provider/todos_provider.dart';
 import 'package:will_do_full_app/product/widget/chips/category_chip.dart';
 import 'package:will_do_full_app/product/widget/chips/priority_chip.dart';
 import 'package:will_do_full_app/product/widget/text_field/text_area.dart';
@@ -82,15 +82,15 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
       complete: false,
       priorty: ref
           .watch(_priorityProvider.notifier)
-          .priorities[selectedPriorityIndex]
+          .priorities[_selectedPriorityIndex]
           .priorityLevel,
       category: ref
           .watch(_categoryProvider.notifier)
-          .categories[selectedCategoryIndex]
+          .categories[_selectedCategoryIndex]
           .name,
       categoryColor: ref
           .watch(_categoryProvider.notifier)
-          .categories[selectedCategoryIndex]
+          .categories[_selectedCategoryIndex]
           .categoryColor,
     );
     return await ref.watch(_todosProvider.notifier).addTask(todos);
@@ -107,6 +107,8 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
     super.dispose();
     titleController.dispose();
     descController.dispose();
+    _selectedPriorityIndex = 0;
+    _selectedCategoryIndex = 0;
   }
 
   @override
@@ -187,7 +189,7 @@ class _AddTaskViewState extends ConsumerState<AddTaskView> {
   }
 }
 
-int selectedCategoryIndex = 0;
+int _selectedCategoryIndex = 0;
 
 class CategoriesWidget extends ConsumerStatefulWidget {
   const CategoriesWidget({super.key});
@@ -212,12 +214,12 @@ class _CategoriesWidgetState extends ConsumerState<CategoriesWidget> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedCategoryIndex = index;
+                  _selectedCategoryIndex = index;
                 });
               },
               child: CategoryChip(
                 categoryItems: category?[index],
-                isSelected: selectedCategoryIndex == index,
+                isSelected: _selectedCategoryIndex == index,
               ),
             ),
           );
@@ -234,7 +236,7 @@ class _PriorityLevels extends ConsumerStatefulWidget {
   _PriorityLevelsState createState() => _PriorityLevelsState();
 }
 
-int selectedPriorityIndex = 0;
+int _selectedPriorityIndex = 0;
 
 class _PriorityLevelsState extends ConsumerState<_PriorityLevels> {
   @override
@@ -252,12 +254,12 @@ class _PriorityLevelsState extends ConsumerState<_PriorityLevels> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedPriorityIndex = index;
+                  _selectedPriorityIndex = index;
                 });
               },
               child: PriorityChip(
                 priorityItem: priority?[index],
-                isSelected: selectedPriorityIndex == index,
+                isSelected: _selectedPriorityIndex == index,
               ),
             ),
           );

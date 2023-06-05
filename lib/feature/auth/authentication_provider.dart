@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:will_do_full_app/enums/cache_items.dart';
+import 'package:will_do_full_app/product/utility/firebase/firebase_collection.dart';
 
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   AuthenticationNotifier() : super(const AuthenticationState());
@@ -23,11 +24,16 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   }
 
   Future<void> saveUserFirebase(User? user) async {
-    await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
-      'email': user.email,
-      'name': user.displayName ?? 'Nameless', 
-      'userId': user.uid
-    });
+    final snapshot =
+        await FirebaseCollection.users.reference.doc(user!.uid).get();
+
+    if (!snapshot.exists) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'email': user.email,
+        'name': user.displayName ?? 'User',
+        'userId': user.uid
+      });
+    }
   }
 }
 

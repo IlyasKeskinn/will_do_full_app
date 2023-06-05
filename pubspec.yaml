@@ -53,8 +53,12 @@ dependencies:
   firebase_ui_auth: ^1.1.17
   firebase_ui_oauth_google: ^1.0.24
   google_sign_in: ^6.0.2
-  firebase_ui_oauth_twitter: ^1.0.24
-  twitter_login: ^4.0.1
+  firebase_storage: ^11.1.2
+
+
+  #utility
+  image_picker: ^0.8.7+4
+
 
   #ui
   flutter_slidable: ^2.0.0

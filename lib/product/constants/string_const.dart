@@ -10,7 +10,6 @@ class AppText {
   static String cancel = 'Cancel ';
   static String save = 'Save ';
 
-
   //add todos
   static String addTask = 'Add Task';
   static String addTaskTitle = 'Title';
@@ -38,4 +37,10 @@ class AppText {
   static String taskPriority = 'Task Priority :';
   static String deleteTask = 'Delete Task ';
   static String editTask = 'Edit Task ';
+
+  //change account image
+
+  static String changeAccountImage = 'Change Account Image';
+  static String tackPicture = 'Tack Picture';
+  static String imageFromGallery = 'Import From Gallery';
 }

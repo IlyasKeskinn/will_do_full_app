@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:will_do_full_app/feature/home/home_view.dart';
-import 'package:will_do_full_app/feature/provider/category_provider.dart';
-import 'package:will_do_full_app/feature/provider/priority_provider.dart';
-import 'package:will_do_full_app/feature/provider/todos_provider.dart';
+import 'package:will_do_full_app/product/provider/category_provider.dart';
+import 'package:will_do_full_app/product/provider/priority_provider.dart';
+import 'package:will_do_full_app/product/provider/todos_provider.dart';
 import 'package:will_do_full_app/feature/task_screen/sub_view/update_tasks_subview.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
@@ -65,7 +65,7 @@ class _TaskScreenViewState extends ConsumerState<TaskScreenView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             context.emptySizedHeightBoxLow3x,
-            TaskTitleDesc(todoItem: widget.todosItem),
+            TaskTitle(todoItem: widget.todosItem),
             context.emptySizedHeightBoxLow,
             Padding(
               padding: context.onlyLeftPaddingMedium,
@@ -134,18 +134,18 @@ class DeleteTask extends ConsumerWidget {
   }
 }
 
-class TaskTitleDesc extends ConsumerStatefulWidget {
-  const TaskTitleDesc({
+class TaskTitle extends ConsumerStatefulWidget {
+  const TaskTitle({
     super.key,
     required this.todoItem,
   });
   final Todos? todoItem;
 
   @override
-  ConsumerState<TaskTitleDesc> createState() => _TaskTitleDescState();
+  ConsumerState<TaskTitle> createState() => TaskTitleState();
 }
 
-class _TaskTitleDescState extends ConsumerState<TaskTitleDesc> {
+class TaskTitleState extends ConsumerState<TaskTitle> {
   @override
   Widget build(BuildContext context) {
     return Row(

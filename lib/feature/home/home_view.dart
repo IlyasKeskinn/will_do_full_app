@@ -9,12 +9,18 @@ import 'package:will_do_full_app/feature/profile/profile_view.dart';
 import 'package:will_do_full_app/feature/task_screen/task_screen_view.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
+import 'package:will_do_full_app/product/model/users.dart';
+import 'package:will_do_full_app/product/provider/profile_provider.dart';
 import 'package:will_do_full_app/product/widget/homepage/todo_tile.dart';
 import 'package:will_do_full_app/product/widget/text/subtitle_text.dart';
 import 'package:will_do_full_app/product/widget/text/title_text.dart';
 
 final _homeProvider = StateNotifierProvider<HomeProvider, HomeState>((ref) {
   return HomeProvider();
+});
+final _profileProvider =
+    StateNotifierProvider<ProfileProvider, ProfileState>((ref) {
+  return ProfileProvider();
 });
 
 class HomeView extends ConsumerStatefulWidget {
@@ -25,71 +31,93 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
+  late final Users user;
   @override
   void initState() {
     super.initState();
     Future.microtask(
       () => ref.read(_homeProvider.notifier).fetchItems(),
     );
+    ref.read(_profileProvider.notifier).fetchuser();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          foregroundColor: ColorConst.white,
-          onPressed: () async {
-            final response = await context.navigateToPage<bool>(
-              const AddTaskView(),
-              type: SlideType.LEFT,
-            );
-            if (response ?? false) {
-              await ref.read(_homeProvider.notifier).fetchItems();
-            }
-          },
-          backgroundColor: ColorConst.primaryColor,
-          child: const Icon(Icons.add),
+    final todoItems = ref.watch(_homeProvider).todos;
+    final userItem = ref.watch(_profileProvider).userItem;
+    if (userItem == null) {
+      // userItem henüz null ise, yükleme göstergesi gösterin
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const _Appbar(), //_EmptyTask(),
-              Padding(
-                padding: context.paddingNormal,
-                child: Column(
+      );
+    } else {
+      final profileImagePath = userItem.profileImage;
+      return SafeArea(
+        child: Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            foregroundColor: ColorConst.white,
+            onPressed: () async {
+              final response = await context.navigateToPage<bool>(
+                const AddTaskView(),
+                type: SlideType.LEFT,
+              );
+              if (response ?? false) {
+                await ref.read(_homeProvider.notifier).fetchItems();
+              }
+            },
+            backgroundColor: ColorConst.primaryColor,
+            child: const Icon(Icons.add),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _Appbar(user: userItem),
+                Stack(
                   children: [
-                    TextField(
-                      onTap: () {
-                        showSearch(
-                          context: context,
-                          delegate: HomeSearchDelegate(
-                            todoItems:
-                                ref.watch(_homeProvider.notifier).todoList,
+                    Padding(
+                      padding: context.paddingNormal,
+                      child: Column(
+                        children: [
+                          TextField(
+                            onTap: () {
+                              showSearch(
+                                context: context,
+                                delegate: HomeSearchDelegate(
+                                  todoItems: ref
+                                      .watch(_homeProvider.notifier)
+                                      .todoList,
+                                ),
+                              );
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: context.paddingNormal,
+                              fillColor: ColorConst.darkgrey,
+                              filled: true,
+                              border: InputBorder.none,
+                              prefixIcon: const Icon(Icons.search),
+                              hintText: AppText.homesearchTask,
+                            ),
                           ),
-                        );
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: context.paddingNormal,
-                        fillColor: ColorConst.darkgrey,
-                        filled: true,
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.search),
-                        hintText: AppText.homesearchTask,
+                          context.emptySizedHeightBoxLow,
+                          const TodoItems()
+                        ],
                       ),
                     ),
-                    context.emptySizedHeightBoxLow,
-                    const TodoItems()
+                    if (todoItems.isNullOrEmpty)
+                      const Center(child: _EmptyTask()),
                   ],
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
+          bottomNavigationBar: const _NavigationBar(),
         ),
-        bottomNavigationBar: const _NavigationBar(),
-      ),
-    );
+      );
+    }
   }
 }
 
@@ -133,8 +161,8 @@ class TodoItems extends ConsumerWidget {
 }
 
 class _Appbar extends StatelessWidget {
-  const _Appbar();
-
+  const _Appbar({required this.user});
+  final Users user;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -149,18 +177,32 @@ class _Appbar extends StatelessWidget {
           TitleText(value: AppText.appName),
           InkWell(
             onTap: () {
-              context.navigateToPage(const ProfileView());
+              context.navigateToPage(
+                const ProfileView(),
+                type: SlideType.TOP,
+              );
             },
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.asset(
-                  ImageConstants.avatar.toPath,
-                  height: 50,
-                  width: 50,
+            child: Hero(
+              tag: 'profile-photo',
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: user.profileImage.isNullOrEmpty
+                      ? Image.asset(
+                          ImageConstants.avatar.toPath,
+                          width: 50,
+                          height: 50,
+                        )
+                      : Image.network(
+                          //fix
+                          user.profileImage!,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ),

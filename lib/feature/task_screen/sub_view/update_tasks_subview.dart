@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
 import 'package:will_do_full_app/feature/home/home_view.dart';
-import 'package:will_do_full_app/feature/provider/category_provider.dart';
-import 'package:will_do_full_app/feature/provider/priority_provider.dart';
-import 'package:will_do_full_app/feature/provider/todos_provider.dart';
+import 'package:will_do_full_app/product/provider/category_provider.dart';
+import 'package:will_do_full_app/product/provider/priority_provider.dart';
+import 'package:will_do_full_app/product/provider/todos_provider.dart';
 import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/model/todos.dart';
 import 'package:will_do_full_app/product/widget/buttons/primary_button.dart';
@@ -22,6 +22,8 @@ final _priorityProvider =
     StateNotifierProvider<PriorityProvider, PriorityState>((ref) {
   return PriorityProvider();
 });
+
+
 
 class UpdateTasksSubView extends ConsumerStatefulWidget {
   const UpdateTasksSubView({
