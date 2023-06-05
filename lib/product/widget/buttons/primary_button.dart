@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:will_do_full_app/product/constants/color_constants.dart';
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({super.key, required this.value, required this.click});
+  const PrimaryButton({super.key, required this.value, this.click});
   final String value;
-  final VoidCallback click;
+  final VoidCallback? click;
 
   @override
   Widget build(BuildContext context) {

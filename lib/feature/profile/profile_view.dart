@@ -9,6 +9,7 @@ import 'package:will_do_full_app/product/constants/string_const.dart';
 import 'package:will_do_full_app/product/model/users.dart';
 import 'package:will_do_full_app/product/provider/profile_provider.dart';
 import 'package:will_do_full_app/product/utility/image/pick_image.dart';
+import 'package:will_do_full_app/product/widget/buttons/primary_button.dart';
 import 'package:will_do_full_app/product/widget/text/subtitle_text.dart';
 
 final _profileProvider =
@@ -37,6 +38,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     if (userItem == null) {
       // userItem henüz null ise, yükleme göstergesi gösterin
       return const Scaffold(
+        resizeToAvoidBottomInset: true,
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -46,35 +48,37 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         appBar: AppBar(
           title: Text(AppText.profileTitlte),
         ),
-        body: Stack(
-          children: [
-            Opacity(
-              opacity: _isLoading ? 0.2 : 1,
-              child: IgnorePointer(
-                ignoring: _isLoading,
-                child: Padding(
-                  padding: context.horizontalPaddingNormal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _ImageBox(user: userItem),
-                      context.emptySizedHeightBoxLow,
-                      Text(userItem.name.toCapitalized()),
-                      context.emptySizedHeightBoxLow,
-                      const _Buttons(),
-                      context.emptySizedHeightBoxLow3x,
-                      const _SettingsColumn(),
-                      const _LogoutButton(),
-                    ],
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: _isLoading ? 0.2 : 1,
+                child: IgnorePointer(
+                  ignoring: _isLoading,
+                  child: Padding(
+                    padding: context.horizontalPaddingNormal,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _ImageBox(user: userItem),
+                        context.emptySizedHeightBoxLow,
+                        Text(userItem.name.toCapitalized()),
+                        context.emptySizedHeightBoxLow,
+                        const _Buttons(),
+                        context.emptySizedHeightBoxLow3x,
+                        const _SettingsColumn(),
+                        const _LogoutButton(),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            if (_isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+              if (_isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       );
     }
@@ -118,14 +122,27 @@ class _SettingsColumn extends StatelessWidget {
         _SettingsTile(
           leadingIcon: const Icon(Icons.person_outline),
           settingsName: AppText.profileEditAcountName,
-          event: () {},
+          event: () {
+            showModalBottomSheet(
+              barrierColor: ColorConst.darkgrey.withOpacity(0.9),
+              backgroundColor: ColorConst.backgrounColor,
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: const _ChangeAccountName(),
+                );
+              },
+            );
+          },
         ),
-        context.emptySizedHeightBoxLow3x,
-        _SettingsTile(
-          leadingIcon: const Icon(Icons.key_outlined),
-          settingsName: AppText.profileEditPassword,
-          event: () {},
-        ),
+        // context.emptySizedHeightBoxLow3x,
+        // _SettingsTile(
+        //   leadingIcon: const Icon(Icons.key_outlined),
+        //   settingsName: AppText.profileEditPassword,
+        //   event: () {},
+        // ),
         context.emptySizedHeightBoxLow3x,
         _SettingsTile(
           leadingIcon: const Icon(Icons.camera_alt_outlined),
@@ -168,12 +185,6 @@ class _ChangeAccountImage extends ConsumerStatefulWidget {
 }
 
 class _ChangeAccountImageState extends ConsumerState<_ChangeAccountImage> {
-  void updateLoading() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -181,7 +192,7 @@ class _ChangeAccountImageState extends ConsumerState<_ChangeAccountImage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SubtitleText(value: AppText.changeAccountImage.toCapitalized()),
+          SubtitleText(value: AppText.profileEditImage.toCapitalized()),
           context.emptySizedHeightBoxLow,
           Divider(
             color: ColorConst.white,
@@ -208,6 +219,75 @@ class _ChangeAccountImageState extends ConsumerState<_ChangeAccountImage> {
             child: Text(AppText.imageFromGallery.toCapitalized()),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ChangeAccountName extends ConsumerStatefulWidget {
+  const _ChangeAccountName();
+
+  @override
+  ConsumerState<_ChangeAccountName> createState() => _ChangeAccountNameState();
+}
+
+class _ChangeAccountNameState extends ConsumerState<_ChangeAccountName> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController nameTitleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(_profileProvider.notifier).fetchuser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    nameTitleController.text =
+        ref.watch(_profileProvider).userItem!.name.toCapitalized();
+    return Form(
+      key: formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Padding(
+        padding: context.paddingNormal,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SubtitleText(value: AppText.profileEditAcountName.toCapitalized()),
+            context.emptySizedHeightBoxLow,
+            Divider(
+              color: ColorConst.white,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
+            ),
+            context.emptySizedHeightBoxLow,
+            TextFormField(
+              validator: (value) {
+                if (value.isNullOrEmpty) {
+                  return AppText.titleNotEmpty.toCapitalized();
+                }
+                return null;
+              },
+              controller: nameTitleController,
+              onTap: () {
+                nameTitleController.selection = TextSelection.collapsed(
+                  offset: nameTitleController.text.length,
+                );
+              },
+            ),
+            context.emptySizedHeightBoxNormal,
+            PrimaryButton(
+              value: AppText.save,
+              click: () async {
+                await ref
+                    .watch(_profileProvider.notifier)
+                    .updateAccountName(nameTitleController.text);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
       ),
     );
   }

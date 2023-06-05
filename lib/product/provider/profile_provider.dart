@@ -70,6 +70,14 @@ class ProfileProvider extends StateNotifier<ProfileState> {
     final imageRef = storageRef.child(imageName);
     return imageRef;
   }
+
+  Future<void> updateAccountName(String name) async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final response = await FirebaseCollection.users.reference
+        .doc(uid)
+        .update({'name': name});
+    await fetchuser();
+  }
 }
 
 class ProfileState extends Equatable {
